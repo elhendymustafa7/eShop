@@ -1,0 +1,98 @@
+﻿@using WebApplication4.Models.ViewModel
+@model IEnumerable<UserIndexVM>
+
+@{
+    ViewData["Title"] = "Products";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+
+    <!-- Page Content -->
+    <!-- Items Starts Here -->
+    <div class="featured-page">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 col-sm-12">
+            <div class="section-heading">
+              <div class="line-dec"></div>
+              <h1>Featured Items</h1>
+            </div>
+          </div>
+          <div class="col-md-8 col-sm-12">
+            <div id="filters" class="button-group">
+              <button class="btn btn-primary" data-filter="*">All Products</button>
+              <button class="btn btn-primary" data-filter=".new">Newest</button>
+              <button class="btn btn-primary" data-filter=".low">Low Price</button>
+              <button class="btn btn-primary" data-filter=".high">Hight Price</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured container no-gutter">
+
+        <div class="row posts">
+        @foreach (var item in Model)
+        {
+            int i = 0;
+                <div id="@i" class="item new col-md-4" >
+                        <a asp-controller="Products" asp-action="single_product" asp-route-id="@item.Id">
+                        <div class="featured-item">
+                                <img src="@($"data:image/*;base64,{Convert.ToBase64String(item.Image)}" )" height="300" alt="">
+                            <h4>@item.Name</h4>
+                            <h6>$@item.Price</h6>
+                        </div>
+                        </a>
+                    </div>
+            i++;
+        }
+
+        </div>
+    </div>
+
+    <!-- Featred Page Ends Here -->
+<div class="page-navigation">
+     <div class="container" >
+        <div class="row">
+            <div class="col-md-12">
+                @if (pager.TotalPages > 0)
+                {
+                        <ul >
+                        @if (pager.CurrentPage > 1)
+                        {
+                                    <li >
+                                        <a  asp-controller="Products" asp-action="Products" asp-route-pg="1"> &lt;&lt;</a>
+                                    </li>
+                                    <li >
+                                        <a  asp-controller="Products" asp-action="Products" asp-route-pg="@(pager.CurrentPage-1)"> &lt;</a>
+                                    </li>
+
+                        }
+                        @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                        {
+                                    <li class=" @(pge == pager.CurrentPage?"current-page":"")">
+                                        <a  asp-controller="Products" asp-action="Products" asp-route-pg="@pge"> @pge</a>
+                                    </li>   
+                        }
+                        @if (pager.CurrentPage < pager.TotalPages)
+                        {
+                                    <li >
+                                        <a asp-controller="Products" asp-action="Products" asp-route-pg="@(pager.CurrentPage+1)"> 	&gt;</a>
+                                    </li>
+                                    <li >
+                                        <a  asp-controller="Products" asp-action="Products" asp-route-pg="@(pager.TotalPages)"> 	&gt;&gt;</a>
+                                    </li>
+                        }
+                        </ul>
+                }
+            </div>
+        </div>
+     </div>
+</div>

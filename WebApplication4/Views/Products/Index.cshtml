@@ -1,0 +1,129 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+
+<h1>Index</h1>
+
+<a class="btn btn-primary" asp-action="Create">
+    <i class="bi bi-plus"></i>Add Product
+</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.discription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantityInStock)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Categorys)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Images)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+
+                <tr>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.discription)
+                    </td>
+                    <td>
+                    @Html.DisplayFor(modelItem => item.QuantityInStock)
+                    </td>
+                    <td>
+                    @foreach (var x in item.Categorys)
+                    {
+                        @Html.DisplayFor(modelItem => x.category )
+                        @(" ")
+                    }
+                    </td>
+                    <td>
+                    @foreach (var x in item.Images)
+                    {
+                                <img  src="@($"data:image/*;base64,{Convert.ToBase64String(x.image)}" )" 
+                        alt="a" style="max-width: 35px" />
+                        @(" ")
+                    }
+                    </td>
+                    <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id"class="btn btn-outline-secondary">
+                                   Edit
+                            </a> |
+
+                                  <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger js-delete" >
+                                Delete
+                            </a>
+                    </td>
+                </tr>
+
+        }
+    </tbody>
+</table>
+
+
+ <div class="container" >
+    @if (pager.TotalPages > 0)
+    {
+            <ul class="pagination justify-content-end">
+
+            @if (pager.CurrentPage > 1)
+            {
+                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products1" asp-action="Index" asp-route-pg="1"> &lt;&lt;</a>
+                        </li>
+                        <li class="page-item">
+                                    <a class="page-link" asp-controller="Products1" asp-action="Index" asp-route-pg="@(pager.CurrentPage-1)"> &lt;</a>
+                        </li>
+
+            }
+
+            @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+            {
+                        <li class="page-item @(pge == pager.CurrentPage?"active":"")">
+                            <a class="page-link" asp-controller="Products1" asp-action="Index" asp-route-pg="@pge"> @pge</a>
+                        </li>   
+            }
+            @if (pager.CurrentPage < pager.TotalPages)
+            {
+                        <li class="page-item">
+                                    <a class="page-link" asp-controller="Products1" asp-action="Index" asp-route-pg="@(pager.CurrentPage+1)"> 	&gt;</a>
+                        </li>
+                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products1" asp-action="Index" asp-route-pg="@(pager.TotalPages)"> 	&gt;&gt;</a>
+                        </li>
+            }
+             </ul>
+    }
+
+  </div>
+

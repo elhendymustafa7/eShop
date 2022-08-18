@@ -1,0 +1,117 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "single_product";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+    <!-- Page Content -->
+    <!-- Single Starts Here -->
+    <div class="single-product">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="section-heading">
+              <div class="line-dec"></div>
+              <h1>@Model.Name</h1>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="product-slider">
+              <div id="slider" class="flexslider">
+                <ul class="slides">
+                            @foreach (var item in Model.Images)
+                            {
+                                      <li>
+                            <img src="@($"data:image/*;base64,{Convert.ToBase64String(item.image)}" )" />
+                      </li>
+                            }
+
+
+                  <!-- items mirrored twice, total of 12 -->
+                </ul>
+              </div>
+              <div id="carousel" class="flexslider">
+                <ul class="slides">
+                            @foreach (var item in Model.Images)
+                            {
+                                      <li>
+                            <img src="@($"data:image/*;base64,{Convert.ToBase64String(item.image)}" )" />
+                      </li>
+                            }
+                  <!-- items mirrored twice, total of 12 -->
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="right-content">
+              <h4>@Model.Name</h4>
+              <h6>$@Model.Price</h6>
+              <p>@Model.discription</p>
+              <span>@Model.QuantityInStock left on stock</span>
+              <form asp-controller="Products" asp-action="single_product" enctype="multipart/form-data">
+                 <input type="hidden" name="Id" value="@Model.Id" />
+                <label for="quantity">Quantity:</label>
+                <input name="Quantity"   type="number" class="quantity-text" id="quantity" 
+                	onfocus="if(this.value == '1') { this.value = ''; }" 
+                    onBlur="if(this.value == '') { this.value = '1';}"
+                    value="@Model.QuantityInStock">
+                <input type="submit" class="button" value="Order Now!">
+              </form>
+              <div class="down-content">
+                <div class="categories">
+                  <h6>Category: <span>  @foreach (var item in Model.Categorys)
+                                    {
+                                        <a  href="#"> @item.category </a>
+                                    } </span></h6>
+                </div>
+                <div class="share">
+                  <h6>Share: <span><a href="#"><i class="fa fa-facebook"></i></a><a href="#"><i class="fa fa-linkedin"></i></a><a href="#"><i class="fa fa-twitter"></i></a></span></h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Single Page Ends Here -->
+
+
+    <!-- Similar Starts Here -->
+    <div class="featured-items">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="section-heading">
+              <div class="line-dec"></div>
+              <h1>You May Also Like</h1>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="owl-carousel owl-theme">
+                    @foreach (var item in ViewBag.Products)
+                    {
+                        int i = 0;
+                                <a  asp-controller="Products" asp-action="single_product" asp-route-id="@item.Id">
+                                <div class="featured-item">
+                                    <img src="@($"data:image/*;base64,{Convert.ToBase64String(item.Image)}" )" height="250" width="200" alt="Item @i">
+                                    <h4>@item.Name</h4>
+                                    <h6>$@item.Price</h6>
+                                </div>
+                            </a>
+                        i++;
+                    }
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Similar Ends Here -->
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
